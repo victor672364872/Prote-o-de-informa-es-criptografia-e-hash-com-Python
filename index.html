@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>[SEC_LAB] - Proteção de Informações com Python</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <canvas id="matrixCanvas"></canvas>
+
+  <div class="container">
+    <header>
+      <div class="tag-system">> SYSTEM_ACTIVE // SECURITY_LAB_V3.0</div>
+      <h1>PROTEÇÃO DE INFORMAÇÕES</h1>
+      <p class="subtitle">CRIPTOGRAFIA, HASHING E BOAS PRÁTICAS COM PYTHON</p>
+    </header>
+
+    <div class="grid">
+      <!-- MÓDULO 1: HASHING -->
+      <section class="card">
+        <h2>[0x01] HASHING (SHA-256)</h2>
+        <p class="desc">A criptografia hash cria uma "impressão digital" única e irreversível do dado original.</p>
+        
+        <div class="demo-box">
+          <label for="hashInput">> Texto para Hash:</label>
+          <input type="text" id="hashInput" placeholder="Digite algo aqui..." value="SenhaSecreta123">
+          
+          <label>> Hash SHA-256 gerado:</label>
+          <div class="code-box" id="hashOutput">-- AGUARDANDO ENTRADA --</div>
+        </div>
+
+        <h3>Código Python para Google Colab:</h3>
+        <pre><code>import hashlib
+
+texto = "SenhaSecreta123"
+
+# Gerando o Hash SHA-256
+hash_obj = hashlib.sha256(texto.encode())
+hash_hex = hash_obj.hexdigest()
+
+print(f"Texto Original: {texto}")
+print(f"Hash SHA-256  : {hash_hex}")</code></pre>
+      </section>
+
+      <!-- MÓDULO 2: CRIPTOGRAFIA -->
+      <section class="card">
+        <h2>[0x02] CRIPTOGRAFIA (FERNET/AES)</h2>
+        <p class="desc">Criptografia simétrica para cifrar e decifrar dados usando uma chave secreta.</p>
+        
+        <div class="demo-box">
+          <label for="cryptoInput">> Texto Secreto:</label>
+          <input type="text" id="cryptoInput" placeholder="Mensagem confidencial..." value="Mensagem Ultra Secreta">
+          
+          <label>> Chave Simétrica (Simulação):</label>
+          <input type="text" id="cryptoKey" value="k8Z_9xL02mN4_vQ7wP1zR3xY5tA8sB6=" readonly>
+
+          <label>> Dado Cifrado:</label>
+          <div class="code-box" id="cryptoEncrypted">-- AGUARDANDO ENTRADA --</div>
+
+          <label>> Dado Decifrado:</label>
+          <div class="code-box" id="cryptoDecrypted">-- AGUARDANDO ENTRADA --</div>
+        </div>
+
+        <h3>Código Python para Google Colab:</h3>
+        <pre><code>!pip install cryptography -q
+
+from cryptography.fernet import Fernet
+
+# 1. Gerar Chave Secreta
+chave = Fernet.generate_key()
+cipher = Fernet(chave)
+
+# 2. Cifrar e Decifrar
+mensagem = "Mensagem Ultra Secreta".encode()
+mensagem_cifrada = cipher.encrypt(mensagem)
+mensagem_decifrada = cipher.decrypt(mensagem_cifrada).decode()
+
+print(f"Chave Gerada    : {chave.decode()}")
+print(f"Texto Cifrado   : {mensagem_cifrada.decode()}")
+print(f"Texto Decifrado : {mensagem_decifrada}")</code></pre>
+      </section>
+
+      <!-- MÓDULO 3: GUIA DE PROTEÇÃO -->
+      <section class="card full-width">
+        <h2>[0x03] GUIA DE PROTEÇÃO & BOAS PRÁTICAS</h2>
+        <p class="desc">Métodos fundamentais para proteger informações e garantir a segurança no desenvolvimento de sistemas:</p>
+
+        <ul class="protection-list">
+          <li>
+            <strong>1. Proteção de Senhas com Hash e Salt</strong>
+            <p>Nunca salve senhas em texto puro. Armazene apenas o hash da senha combinada com um valor aleatório (<i>salt</i>) para mitigar ataques de dicionário e tabelas Rainbow.</p>
+          </li>
+          <li>
+            <strong>2. Criptografia em Trânsito (HTTPS/TLS)</strong>
+            <p>Sempre transite informações sensíveis utilizando protocolos cifrados para impedir a interceptação de dados na rede (Ataques Man-in-the-Middle).</p>
+          </li>
+          <li>
+            <strong>3. Gestão Segura de Chaves Criptográficas</strong>
+            <p>Não inclua chaves secretas diretamente dentro do código-fonte (<i>hardcoding</i>). Utilize variáveis de ambiente ou cofres de credenciais (Key Vaults).</p>
+          </li>
+          <li>
+            <strong>4. Validação de Integridade de Arquivos</strong>
+            <p>Utilize hashes para verificar se um arquivo baixado ou transferido não foi alterado ou corrompido durante a transmissão.</p>
+          </li>
+        </ul>
+
+        <h3>Exemplo em Python: Validação de Integridade no Colab</h3>
+        <pre><code>import hashlib
+
+def verificar_integridade(caminho_arquivo, hash_esperado):
+    sha256 = hashlib.sha256()
+    with open(caminho_arquivo, 'rb') as f:
+        while chunk := f.read(8192):
+            sha256.update(chunk)
+    
+    hash_calculado = sha256.hexdigest()
+    return hash_calculado == hash_esperado, hash_calculado
+
+# Criando arquivo de teste no Colab
+with open("arquivo_teste.txt", "w") as f:
+    f.write("Conteudo confidencial intacto.")
+
+# Teste de verificação
+hash_original = "13b6326dd28eb675c8893bd596dc5b497f6c3eb9ad483ef3c7bdcdca5081fdfc"
+is_valido, hash_atual = verificar_integridade("arquivo_teste.txt", hash_original)
+
+print(f"Hash Calculado   : {hash_atual}")
+print(f"Arquivo Íntegro? : {is_valido}")</code></pre>
+      </section>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
